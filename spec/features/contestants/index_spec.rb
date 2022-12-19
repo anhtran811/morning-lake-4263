@@ -19,7 +19,7 @@ RSpec.describe 'Contestants Index page' do
       kentaro = Contestant.create!(name: "Kentaro Kameyama", age: 30, hometown: "Boston", years_of_experience: 8)
 
       visit '/contestants'
-
+      
       expect(page).to have_content(jay.name)
       expect(page).to have_content(gretchen.name)
       expect(page).to have_content(kentaro.name)
@@ -42,11 +42,17 @@ RSpec.describe 'Contestants Index page' do
       ContestantProject.create(contestant_id: gretchen.id, project_id: upholstery_tux.id)
       
       visit '/contestants'
+    
+      within("#contestant_projects-#{jay.id}") do
+        expect(page).to have_content("Project: #{news_chic.name}")
+        expect(page).to_not have_content("Project: #{lit_fit.name}")
+      end
 
-      expect(page).to have_content("Project: #{news_chic.name}")
-      expect(page).to have_content("Project: #{lit_fit.name}")
-      expect(page).to have_content("Project: #{upholstery_tux.name}")
-      expect(page).to_not have_content("Project: #{boardfit.name}")
+      within("#contestant_projects-#{gretchen.id}") do
+        expect(page).to have_content("Project: #{lit_fit.name}")
+        expect(page).to have_content("Project: #{upholstery_tux.name}")
+        expect(page).to_not have_content("Project: #{boardfit.name}")
+      end
     end
   end
 end
