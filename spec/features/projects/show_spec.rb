@@ -33,7 +33,7 @@ RSpec.describe "Project's show page" do
 #   Challenge Theme: Apartment Furnishings
 #   Number of Contestants: 3 )
 
-  describe 'User story 2' do
+  describe 'User story 3' do
     it 'can show the number of contestants on this project' do
       jay = Contestant.create!(name: "Jay McCarroll", age: 40, hometown: "LA", years_of_experience: 13)
       gretchen = Contestant.create!(name: "Gretchen Jones", age: 36, hometown: "NYC", years_of_experience: 12)
