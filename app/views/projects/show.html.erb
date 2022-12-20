@@ -1,7 +1,15 @@
 <h4><%= @project.name %></h4>
+
 <p>Material: <%= @project.material %></p>
 <p>Challenge Theme: <%= @challenge.theme %>
 <p>Number of contestants: <%= @project.contestant_count %></p>
 <div id="avg_contestant_exp-<%= @project.id %>"> 
-  <p>Average Contestant Experience: <%= @project.contestants.avg_contestant_experience %></p>
+  <p>Average Contestant Experience: <%= @project.contestants.avg_contestant_experience %> years </p>
 </div>
+
+<p>Contestant ID:</p>
+<%= form_with url: "/projects/#{@project.id}", method: :patch, local: true do |form| %>
+  <%= form.label :contestant_identification %>
+  <%= form.text_field :contestant_identification %>
+  <%= form.submit 'Add Contestant To Project' %>
+<% end %>

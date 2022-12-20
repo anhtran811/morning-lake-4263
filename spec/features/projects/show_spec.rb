@@ -48,8 +48,8 @@ RSpec.describe "Project's show page" do
       ContestantProject.create!(contestant_id: kentaro.id, project_id: news_chic.id)
 
       visit "/projects/#{news_chic.id}"
-
-      expect(page).to have_content("Number of contestants: 3")
+      
+      expect(page).to have_content("Number of contestants: #{news_chic.contestant_count}")
     end
   end
 
@@ -95,4 +95,53 @@ RSpec.describe "Project's show page" do
     end
   end
 
+# As a visitor,
+# When I visit a project's show page
+# I see a form to add a contestant to this project
+# When I fill out a field with an existing contestants id
+# And hit "Add Contestant To Project"
+# I'm taken back to the project's show page
+# And I see that the number of contestants has increased by 1
+# And when I visit the contestants index page
+# I see that project listed under that contestant's name
+
+  describe 'Extension 2' do
+    it 'can add a contestant to a project' do
+      jay = Contestant.create!(name: "Jay McCarroll", age: 40, hometown: "LA", years_of_experience: 13)
+      gretchen = Contestant.create!(name: "Gretchen Jones", age: 36, hometown: "NYC", years_of_experience: 12)
+      recycled_material_challenge = Challenge.create!(theme: "Recycled Material", project_budget: 1000)
+      news_chic = recycled_material_challenge.projects.create!(name: "News Chic", material: "Newspaper")
+      ContestantProject.create!(contestant_id: jay.id, project_id: news_chic.id)
+      ContestantProject.create!(contestant_id: gretchen.id, project_id: news_chic.id)
+
+      visit "/projects/#{news_chic.id}"
+      fill_in('Contestant identification', with: "#{jay.id}")
+      click_on 'Add Contestant To Project'
+
+      expect(current_path).to eq("/projects/#{news_chic.id}")
+    end
+    
+    it 'will update the contestant count on the project show page' do
+      jay = Contestant.create!(name: "Jay McCarroll", age: 40, hometown: "LA", years_of_experience: 13)
+      gretchen = Contestant.create!(name: "Gretchen Jones", age: 36, hometown: "NYC", years_of_experience: 12)
+      recycled_material_challenge = Challenge.create!(theme: "Recycled Material", project_budget: 1000)
+      news_chic = recycled_material_challenge.projects.create!(name: "News Chic", material: "Newspaper")
+      ContestantProject.create!(contestant_id: jay.id, project_id: news_chic.id)
+      ContestantProject.create!(contestant_id: gretchen.id, project_id: news_chic.id)
+      
+      visit "/projects/#{news_chic.id}"
+      
+      expect(news_chic.contestant_count).to eq(2)
+      expect(page).to have_content("Number of contestants: 2")
+      
+      kentaro = Contestant.create!(name: "Kentaro Kameyama", age: 30, hometown: "Boston", years_of_experience: 8)
+      
+      fill_in('Contestant identification', with: kentaro.id)
+      click_on 'Add Contestant To Project'
+      
+      expect(news_chic.contestant_count).to eq(3)
+      expect(page).to have_content("Number of contestants: 3")
+      expect(current_path).to eq("/projects/#{news_chic.id}")
+    end 
+  end
 end
